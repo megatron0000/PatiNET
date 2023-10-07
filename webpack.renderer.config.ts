@@ -21,5 +21,6 @@ export const rendererConfig: Configuration = {
   },
   externals: {
     dgram: "commonjs dgram",
+    dns: "commonjs dns",
   },
 };
