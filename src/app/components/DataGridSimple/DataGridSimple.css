@@ -1,0 +1,19 @@
+.multiline {
+  white-space: pre !important;
+  min-height: 50px !important;
+}
+
+.allow-overflow > .MuiDataGrid-cellContent {
+  overflow: auto !important;
+  text-overflow: unset !important;
+}
+
+.multiline-allow-overflow {
+  white-space: pre !important;
+  min-height: 50px !important;
+}
+
+.multiline-allow-overflow > .MuiDataGrid-cellContent {
+  overflow: auto !important;
+  text-overflow: unset !important;
+}

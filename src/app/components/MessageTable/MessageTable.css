@@ -1,9 +1,0 @@
-.message-cell {
-  white-space: pre !important;
-  min-height: 50px !important;
-}
-
-.message-cell > .MuiDataGrid-cellContent {
-  overflow: auto !important;
-  text-overflow: unset !important;
-}

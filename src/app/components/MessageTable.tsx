@@ -1,5 +1,4 @@
-import "./MessageTable.css";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGridSimple } from "./DataGridSimple";
 
 type Props = {
   messages: { address: string; message: string }[];
@@ -8,33 +7,28 @@ type Props = {
 
 export function MessageTable({ addressLabel, messages }: Props) {
   return (
-    <DataGrid
+    <DataGridSimple
       columns={[
         {
           field: "address",
           headerName: addressLabel,
           width: 200,
-          sortable: false,
         },
         {
           field: "message",
           headerName: "Mensagem",
-          sortable: false,
-          cellClassName: "message-cell",
           flex: 1,
+          multiline: true,
+          allowOverflow: true,
         },
       ]}
-      rows={messages.map(({ address, message }, i) => ({
-        address,
-        message: message.endsWith("\n") ? message + "\n" : message, // add another \n to show the line break visually
-        id: i,
-      }))}
+      rows={messages}
       hideFooter
       autoHeight
       getRowHeight={() => "auto"}
       disableColumnFilter
       disableColumnMenu
       disableColumnSelector
-    ></DataGrid>
+    />
   );
 }
