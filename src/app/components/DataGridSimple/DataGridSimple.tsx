@@ -14,9 +14,12 @@ interface AdditionalColumnProps {
   allowOverflow?: boolean;
 }
 
+export type GridSimpleColDef<R extends GridValidRowModel = any> =
+  (GridColDef<R> & AdditionalColumnProps)[];
+
 interface DataGridSimpleProps<R extends GridValidRowModel = any>
   extends Omit<BaseProps<R>, "columns"> {
-  columns: (GridColDef<R> & AdditionalColumnProps)[];
+  columns: GridSimpleColDef;
 }
 
 export function DataGridSimple<R extends GridValidRowModel = any>(
@@ -55,6 +58,7 @@ export function DataGridSimple<R extends GridValidRowModel = any>(
       disableColumnFilter
       disableColumnMenu
       disableColumnSelector
+      style={props.style}
     />
   );
 }
