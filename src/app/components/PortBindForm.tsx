@@ -1,23 +1,46 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { Socket, createSocket } from "dgram";
+import { Socket as UDPSocket, createSocket } from "dgram";
+import { Socket as TCPClient, Server as TCPServer, createServer } from "net";
 import { ComponentProps, useState } from "react";
 import { validatePort } from "../utils/validate-port";
 
-type Props = {
+type SocketClass = UDPSocket | TCPServer;
+type SocketType = "UDP" | "TCP server";
+
+type Props<T extends SocketType> = {
+  socketType: T;
   acceptEmptyPort: boolean;
-  onBound: (socket: Socket) => void;
+  onBound: (socket: T extends "UDP" ? UDPSocket : TCPServer) => void;
   onUnbound: () => void;
 };
 
-export function PortBindForm({
+function create(socketType: "UDP"): UDPSocket;
+function create(socketType: "TCP server"): TCPServer;
+function create<T extends SocketType>(
+  socketType: T
+): T extends "UDP" ? UDPSocket : TCPServer;
+function create(socketType: SocketType): UDPSocket | TCPServer {
+  return socketType === "UDP" ? createSocket("udp4") : createServer();
+}
+
+function bind(socket: SocketClass, port?: number) {
+  if (socket instanceof UDPSocket) {
+    socket.bind(port);
+  } else {
+    socket.listen(port);
+  }
+}
+
+export function PortBindForm<T extends SocketType>({
+  socketType,
   acceptEmptyPort,
   onBound,
   onUnbound,
   style = {},
-}: Props & ComponentProps<"form">) {
+}: Props<T> & ComponentProps<"form">) {
   const [port, setPort] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const [socket, setSocket] = useState<SocketClass | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPort(event.target.value);
@@ -45,18 +68,19 @@ export function PortBindForm({
   };
 
   function createAndBindSocket(port: string) {
-    const newSocket = createSocket("udp4");
+    const newSocket = create(socketType);
 
     if (port !== "") {
-      newSocket.bind(Number(port));
+      bind(newSocket, Number(port));
     } else {
-      newSocket.bind();
+      bind(newSocket);
     }
 
     const onListening = () => {
       newSocket.removeListener("listening", onListening);
       newSocket.removeListener("error", onError);
       setSocket(newSocket);
+      // @ts-expect-error
       setPort(newSocket.address().port.toString());
       onBound(newSocket);
     };
