@@ -1,110 +1,121 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Container, Typography, useTheme } from "@mui/material";
 import { Socket } from "dgram";
 import { useEffect, useState } from "react";
-import { MessageTable } from "../components/MessageTable";
+import { AddRemoteForm } from "../components/AddRemoteForm";
+import { HostCard } from "../components/HostCard";
 import { PortBindForm } from "../components/PortBindForm";
-import { SendMessageForm } from "../components/SendMessageForm";
+
+interface Remote {
+  ip: string;
+  port: string;
+  hostname?: string;
+  inboundData: string;
+  outboundData: string;
+}
 
 export function UDP() {
   const theme = useTheme();
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [receivedPackets, setReceivedPackets] = useState<ReceivedPacket[]>([]);
-  const [sentPackets, setSentPackets] = useState<SentPacket[]>([]);
+  const [remotes, setRemotes] = useState<Remote[]>([]);
 
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("message", (message, sender) => {
-      setReceivedPackets((prev) => [
-        ...prev,
-        {
-          sender: sender.address + ":" + sender.port,
-          message: message.toString(),
-        },
-      ]);
+    socket.on("message", (message, { address, port }) => {
+      setRemotes((prev) => {
+        const newRemotes = [...prev];
+        const remoteIndex = newRemotes.findIndex(
+          (remote) => remote.ip === address && remote.port === port.toString()
+        );
+        if (remoteIndex === -1) {
+          newRemotes.unshift({
+            ip: address,
+            port: port.toString(),
+            inboundData: message.toString(),
+            outboundData: "",
+          });
+        } else {
+          newRemotes[remoteIndex].inboundData += message.toString();
+        }
+        return newRemotes;
+      });
     });
   }, [socket]);
 
-  function handleMessageSubmit(
-    host: string,
-    ip: string,
-    port: string,
-    message: string
-  ) {
+  function handleMessageSubmit(remote: Remote, message: string) {
     if (!socket) return;
 
-    socket.send(message, Number(port), ip);
+    socket.send(message, Number(remote.port), remote.ip);
 
-    setSentPackets((prev) => [
-      ...prev,
-      {
-        host,
-        ip,
-        port,
-        message,
-      },
-    ]);
+    setRemotes((prev) => {
+      const newRemotes = [...prev];
+      remote.outboundData += message;
+      return newRemotes;
+    });
+  }
+
+  function handleAddRemote(
+    hostname: string | undefined,
+    ip: string,
+    port: string
+  ) {
+    if (remotes.find((remote) => remote.ip === ip && remote.port === port)) {
+      return;
+    }
+
+    setRemotes((prev) => {
+      return [
+        {
+          ip,
+          port,
+          ...(hostname !== undefined ? { hostname } : {}),
+          inboundData: "",
+          outboundData: "",
+        },
+        ...prev,
+      ];
+    });
   }
 
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6">Vincular porta</Typography>
       <PortBindForm
+        socketType="UDP"
         acceptEmptyPort={true}
-        onBound={(socket) => setSocket(socket)}
-        onUnbound={() => setSocket(null)}
+        onBound={(socket) => {
+          setSocket(socket);
+          setRemotes([]);
+        }}
+        onUnbound={() => {
+          setSocket(null);
+          setRemotes([]);
+        }}
         style={{ marginBottom: theme.spacing(5) }}
       />
 
       {socket !== null && (
         <>
-          <Typography variant="h6">Enviar mensagem</Typography>
-          <SendMessageForm
-            onSubmit={handleMessageSubmit}
-            style={{ marginBottom: theme.spacing(5) }}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
-            <Box sx={{ width: "45%" }}>
-              <Typography variant="h6">Mensagens recebidas</Typography>
-              <MessageTable
-                addressLabel="Remetente"
-                messages={receivedPackets.map(({ message, sender }) => ({
-                  message,
-                  address: sender,
-                }))}
-              />
-            </Box>
-            <Box sx={{ width: "45%" }}>
-              <Typography variant="h6">Mensagens enviadas</Typography>
-              <MessageTable
-                addressLabel="Destinatário"
-                messages={sentPackets.map(({ host, ip, port, message }) => ({
-                  message,
-                  address: `${ip}:${port} ${host !== ip ? `(${host})` : ""}`,
-                }))}
-              />
-            </Box>
-          </Box>
+          <Typography variant="h6">Adicionar endereço</Typography>
+          <AddRemoteForm onSubmit={handleAddRemote} />
         </>
       )}
+
+      <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+        {remotes.map((remote) => (
+          <HostCard
+            key={remote.ip + remote.port}
+            address={`${remote.ip}:${remote.port} ${
+              remote.hostname ? `(${remote.hostname})` : ""
+            }`}
+            status={null}
+            inboundData={remote.inboundData}
+            outboundData={remote.outboundData}
+            onSubmitMessage={(message) => handleMessageSubmit(remote, message)}
+            style={{ marginBottom: theme.spacing(2) }}
+          />
+        ))}
+      </Container>
     </Box>
   );
-}
-
-interface ReceivedPacket {
-  sender: string;
-  message: string;
-}
-
-interface SentPacket {
-  host: string;
-  ip: string;
-  port: string;
-  message: string;
 }
