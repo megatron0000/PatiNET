@@ -1,3 +1,4 @@
+import EmailIcon from "@mui/icons-material/Email";
 import { Button, TextField, useTheme } from "@mui/material";
 import { ComponentProps, useState } from "react";
 import { validateMessage } from "../utils/validate-message";
@@ -45,9 +46,15 @@ export function SendMessageFormSimple({
         helperText={messageError}
         margin="none"
         size="small"
-        style={{ width: "400px", marginRight: theme.spacing(2) }}
+        sx={{ width: "400px", mr: 2, mb: 1 }}
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        sx={{ mb: 1 }}
+        endIcon={<EmailIcon />}
+      >
         Enviar
       </Button>
     </form>

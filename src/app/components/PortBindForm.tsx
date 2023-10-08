@@ -1,3 +1,5 @@
+import PowerIcon from "@mui/icons-material/Power";
+import PowerOffIcon from "@mui/icons-material/PowerOff";
 import { Button, TextField, Typography } from "@mui/material";
 import { Socket as UDPSocket, createSocket } from "dgram";
 import { Socket as TCPClient, Server as TCPServer, createServer } from "net";
@@ -50,7 +52,11 @@ export function PortBindForm<T extends SocketType>({
     event.preventDefault();
 
     if (socket !== null) {
-      socket.close();
+      try {
+        socket.close();
+      } catch (err) {
+        console.error(err);
+      }
       setSocket(null);
       onUnbound();
       return;
@@ -120,7 +126,8 @@ export function PortBindForm<T extends SocketType>({
         <Button
           type="submit"
           variant="contained"
-          color="primary"
+          endIcon={socket === null ? <PowerIcon /> : <PowerOffIcon />}
+          color={socket === null ? "primary" : "secondary"}
           sx={{ mt: 1, alignSelf: "flex-start" }}
         >
           {socket === null ? "Vincular" : "Desvincular"}

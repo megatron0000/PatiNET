@@ -1,22 +1,23 @@
+import ComputerIcon from "@mui/icons-material/Computer";
+import SensorsIcon from "@mui/icons-material/Sensors";
+import SensorsOffIcon from "@mui/icons-material/SensorsOff";
+
 import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Chip,
   Grid,
-  Theme,
   Typography,
   useTheme,
-  useThemeProps,
 } from "@mui/material";
-import { DataGridSimple, GridSimpleColDef } from "./DataGridSimple";
-import { SendMessageFormSimple } from "./SendMessageFormSimple";
 import { ComponentProps } from "react";
+import { SendMessageFormSimple } from "./SendMessageFormSimple";
 
 type Props = {
-  address: string;
+  localAddress: string;
+  remoteAddress: string;
   /**
    * null means there is no status (UDP)
    */
@@ -25,20 +26,15 @@ type Props = {
   outboundData: string;
 
   // will show buttons if these functions
-  // are provided
+  // are provided and `status` is appropriate
   onClickConnect?: () => void;
   onClickDisconnect?: () => void;
   onSubmitMessage?: (message: string) => void;
 };
 
-type RowModel = {
-  status?: string;
-  inboundData: string;
-  outboundData: string;
-}[];
-
 export function HostCard({
-  address,
+  localAddress,
+  remoteAddress,
   status,
   inboundData,
   outboundData,
@@ -60,44 +56,95 @@ export function HostCard({
       style={style}
     >
       <CardContent>
-        <Typography variant="body1" marginBottom={2} fontWeight="bold">
-          {address}
+        <Box
+          marginBottom={3}
+          paddingTop={1}
+          display={"flex"}
+          flexDirection={"row"}
+          flexWrap={"wrap"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Typography
+            variant="body1"
+            fontWeight="bold"
+            display={"flex"}
+            alignItems={"center"}
+          >
+            {localAddress}
+            <ComputerIcon sx={{ mx: 2 }} />
+          </Typography>
           {status !== null && (
             <Chip
               color={status === "connected" ? "success" : "default"}
               label={status === "connected" ? "Conectado" : "Desconectado"}
             />
           )}
-        </Typography>
-        {onClickConnect && (
-          <Button onClick={onClickConnect} variant="contained" color="primary">
+          <Typography
+            variant="body1"
+            fontWeight="bold"
+            display={"flex"}
+            alignItems={"center"}
+          >
+            <ComputerIcon sx={{ mx: 2 }} />
+            {remoteAddress}
+          </Typography>
+        </Box>
+
+        {status === "disconnected" && onClickConnect && (
+          <Button
+            onClick={onClickConnect}
+            variant="contained"
+            color="primary"
+            sx={{ mb: 1 }}
+            endIcon={<SensorsIcon />}
+          >
             Conectar
           </Button>
         )}
-        {onSubmitMessage && (
-          <SendMessageFormSimple onSubmit={onSubmitMessage} />
+        {(status === null || status === "connected") && onSubmitMessage && (
+          <SendMessageFormSimple
+            onSubmit={onSubmitMessage}
+            style={{ display: "inline-block", marginRight: theme.spacing(2) }}
+          />
         )}
-        {onClickDisconnect && (
+        {status === "connected" && onClickDisconnect && (
           <Button
             onClick={onClickDisconnect}
             variant="contained"
             color="secondary"
+            sx={{ mb: 1 }}
+            endIcon={<SensorsOffIcon />}
           >
             Desconectar
           </Button>
         )}
-        <Grid container spacing={2} marginBottom={2} marginTop={2}>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Dados recebidos
-            </Typography>
-            <BoxedText>{inboundData}</BoxedText>
-          </Grid>
+        <Grid container spacing={2} marginBottom={2} marginTop={1}>
           <Grid item xs={6}>
             <Typography variant="body2" color="text.secondary">
               Dados enviados
             </Typography>
-            <BoxedText>{outboundData}</BoxedText>
+            <BoxedText
+              style={{
+                background:
+                  status === "disconnected" ? theme.palette.grey[200] : "",
+              }}
+            >
+              {outboundData}
+            </BoxedText>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Dados recebidos
+            </Typography>
+            <BoxedText
+              style={{
+                background:
+                  status === "disconnected" ? theme.palette.grey[200] : "",
+              }}
+            >
+              {inboundData}
+            </BoxedText>
           </Grid>
         </Grid>
       </CardContent>
@@ -105,7 +152,10 @@ export function HostCard({
   );
 }
 
-const BoxedText = ({ children }: { children: string }) => {
+const BoxedText = ({
+  children,
+  style = {},
+}: { children: string } & ComponentProps<"div">) => {
   const theme = useTheme();
 
   return (
@@ -117,6 +167,7 @@ const BoxedText = ({ children }: { children: string }) => {
         whiteSpace: "pre",
         overflowX: "auto",
       }}
+      style={style}
     >
       {children + "\n"}
     </Box>

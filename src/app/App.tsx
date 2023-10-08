@@ -1,11 +1,14 @@
-import CssBaseline from "@mui/material/CssBaseline";
-import { Fragment, useState } from "react";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { SnackbarProvider, closeSnackbar } from "notistack";
 
+import CssBaseline from "@mui/material/CssBaseline";
+import { useState } from "react";
+
+import { IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { CenteredTabs } from "./components/CenteredTabs";
 import { TCPClient } from "./pages/TCPClient";
 import { TCPServer } from "./pages/TCPServer";
 import { UDP } from "./pages/UDP";
-import { ThemeProvider, createTheme } from "@mui/material";
 
 export function App() {
   const [selected, setSelected] = useState("UDP");
@@ -36,19 +39,29 @@ export function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <CenteredTabs
-        options={["UDP", "Servidor TCP", "Cliente TCP"]}
-        selected={selected}
-        onChange={setSelected}
-      />
-      {selected === "UDP" ? (
-        <UDP />
-      ) : selected === "Servidor TCP" ? (
-        <TCPServer />
-      ) : (
-        <TCPClient />
-      )}
+      <SnackbarProvider
+        variant="error"
+        autoHideDuration={null}
+        action={(snackbarId) => (
+          <IconButton onClick={() => closeSnackbar(snackbarId)}>
+            <DeleteOutlineOutlinedIcon />
+          </IconButton>
+        )}
+      >
+        <CssBaseline />
+        <CenteredTabs
+          options={["UDP", "Servidor TCP", "Cliente TCP"]}
+          selected={selected}
+          onChange={setSelected}
+        />
+        {selected === "UDP" ? (
+          <UDP />
+        ) : selected === "Servidor TCP" ? (
+          <TCPServer />
+        ) : (
+          <TCPClient />
+        )}
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

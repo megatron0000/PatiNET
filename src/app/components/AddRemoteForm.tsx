@@ -73,19 +73,21 @@ export function AddRemoteForm({
         ...style,
       }}
     >
+      {askLocalPort && (
+        <TextField
+          label="Porta local (opcional)"
+          placeholder="e.g. 8080"
+          value={localPort}
+          onChange={(e) => setLocalPort(e.target.value.trim())}
+          error={localPortError !== null}
+          helperText={localPortError}
+          margin="none"
+          size="small"
+          sx={{ mr: 1, mb: 1 }}
+        />
+      )}
       <TextField
-        label="Porta local (opcional)"
-        placeholder="e.g. 8080"
-        value={port}
-        onChange={(e) => setLocalPort(e.target.value.trim())}
-        error={localPortError !== null}
-        helperText={localPortError}
-        margin="none"
-        size="small"
-        sx={{ mr: 1, ...(askLocalPort ? {} : { display: "none" }) }}
-      />
-      <TextField
-        label="Host"
+        label="Host remoto"
         placeholder="e.g. 172.24.23.100"
         value={host}
         onChange={(e) => setHost(e.target.value.trim())}
@@ -93,10 +95,10 @@ export function AddRemoteForm({
         helperText={hostError}
         margin="none"
         size="small"
-        sx={{ mr: 1 }}
+        sx={{ mr: 1, mb: 1 }}
       />
       <TextField
-        label="Porta"
+        label="Porta remota"
         placeholder="e.g. 8080"
         value={port}
         onChange={(e) => setPort(e.target.value.trim())}
@@ -104,11 +106,11 @@ export function AddRemoteForm({
         helperText={portError}
         margin="none"
         size="small"
-        sx={{ mr: 1 }}
+        sx={{ mr: 1, mb: 1 }}
       />
 
-      <Button type="submit" variant="contained" color="primary">
-        Adicionar
+      <Button type="submit" variant="outlined" color="primary" sx={{ mb: 1 }}>
+        OK
       </Button>
     </form>
   );

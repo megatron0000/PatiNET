@@ -1,7 +1,8 @@
-import { Box, Container, Typography, useTheme } from "@mui/material";
+import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 import { Socket } from "dgram";
+import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { AddRemoteForm } from "../components/AddRemoteForm";
+import { AddRemoteFormCard } from "../components/AddRemoteFormCard";
 import { HostCard } from "../components/HostCard";
 import { PortBindForm } from "../components/PortBindForm";
 
@@ -17,6 +18,7 @@ export function UDP() {
   const theme = useTheme();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [remotes, setRemotes] = useState<Remote[]>([]);
+  const [isAddingRemote, setIsAddingRemote] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -40,6 +42,18 @@ export function UDP() {
         return newRemotes;
       });
     });
+
+    socket.on("error", (err) => {
+      enqueueSnackbar(err);
+    });
+
+    return () => {
+      try {
+        socket.close();
+      } catch (err) {
+        console.error(err);
+      }
+    };
   }, [socket]);
 
   function handleMessageSubmit(remote: Remote, message: string) {
@@ -94,28 +108,61 @@ export function UDP() {
         style={{ marginBottom: theme.spacing(5) }}
       />
 
-      {socket !== null && (
+      {/* {socket !== null && (
         <>
           <Typography variant="h6">Adicionar endereço</Typography>
           <AddRemoteForm onSubmit={handleAddRemote} />
         </>
-      )}
+      )} */}
 
-      <Container maxWidth="lg" sx={{ marginTop: 4 }}>
-        {remotes.map((remote) => (
-          <HostCard
-            key={remote.ip + remote.port}
-            address={`${remote.ip}:${remote.port} ${
-              remote.hostname ? `(${remote.hostname})` : ""
-            }`}
-            status={null}
-            inboundData={remote.inboundData}
-            outboundData={remote.outboundData}
-            onSubmitMessage={(message) => handleMessageSubmit(remote, message)}
-            style={{ marginBottom: theme.spacing(2) }}
-          />
-        ))}
-      </Container>
+      {socket !== null && (
+        <>
+          <Typography variant="h6">Endereços</Typography>
+
+          <Container
+            maxWidth="lg"
+            sx={{
+              marginTop: 4,
+            }}
+          >
+            <Box display={"flex"} justifyContent={"center"} marginBottom={4}>
+              <Button
+                onClick={() => setIsAddingRemote(true)}
+                variant="outlined"
+              >
+                Adicionar
+              </Button>
+            </Box>
+            {isAddingRemote && (
+              <AddRemoteFormCard
+                localPort={socket?.address().port.toString()}
+                onSubmit={(hostname, ip, port) => {
+                  setIsAddingRemote(false);
+                  handleAddRemote(hostname, ip, port);
+                }}
+                onCancel={() => setIsAddingRemote(false)}
+                style={{ marginBottom: theme.spacing(2) }}
+              />
+            )}
+            {remotes.map((remote) => (
+              <HostCard
+                key={remote.ip + remote.port}
+                localAddress={`127.0.0.1:${socket?.address().port}`}
+                remoteAddress={`${remote.ip}:${remote.port} ${
+                  remote.hostname ? ` (${remote.hostname})` : null
+                }`}
+                status={null}
+                inboundData={remote.inboundData}
+                outboundData={remote.outboundData}
+                onSubmitMessage={(message) =>
+                  handleMessageSubmit(remote, message)
+                }
+                style={{ marginBottom: theme.spacing(2) }}
+              />
+            ))}
+          </Container>
+        </>
+      )}
     </Box>
   );
 }

@@ -1,3 +1,4 @@
+import EmailIcon from "@mui/icons-material/Email";
 import { Button, TextField } from "@mui/material";
 import { ComponentProps, useState } from "react";
 import { validatePort } from "../utils/validate-port";
@@ -60,7 +61,7 @@ export function SendMessageForm({
     >
       <div>
         <TextField
-          label="Host"
+          label="Host remoto"
           placeholder="e.g. 172.24.23.100"
           value={host}
           onChange={(e) => setHost(e.target.value.trim())}
@@ -70,7 +71,7 @@ export function SendMessageForm({
           sx={{ mr: 1 }}
         />
         <TextField
-          label="Porta"
+          label="Porta remota"
           placeholder="e.g. 8080"
           value={port}
           onChange={(e) => setPort(e.target.value.trim())}
@@ -94,6 +95,7 @@ export function SendMessageForm({
         variant="contained"
         color="primary"
         sx={{ mt: 1, alignSelf: "flex-start" }}
+        endIcon={<EmailIcon />}
       >
         Enviar
       </Button>
