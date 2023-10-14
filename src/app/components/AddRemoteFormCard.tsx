@@ -110,7 +110,7 @@ export function AddRemoteFormCard({
                 helperText={localPortError}
                 margin="none"
                 size="small"
-                sx={{ mb: 1 }}
+                sx={{ mb: 1, width: 190 }}
               />
             ) : (
               <Box sx={{ mt: 1 }}>127.0.0.1:{propsLocalPort || "?"}</Box>
@@ -129,7 +129,7 @@ export function AddRemoteFormCard({
               helperText={hostError}
               margin="none"
               size="small"
-              sx={{ mr: 1, mb: 1 }}
+              sx={{ mr: 1, mb: 1, width: 200 }}
             />
             <TextField
               label="Porta remota"
@@ -140,7 +140,7 @@ export function AddRemoteFormCard({
               helperText={portError}
               margin="none"
               size="small"
-              sx={{ mb: 1, width: 150 }}
+              sx={{ mb: 1, width: 140 }}
             />
           </Box>
         </Box>
