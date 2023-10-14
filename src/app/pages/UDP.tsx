@@ -108,13 +108,6 @@ export function UDP() {
         style={{ marginBottom: theme.spacing(5) }}
       />
 
-      {/* {socket !== null && (
-        <>
-          <Typography variant="h6">Adicionar endereço</Typography>
-          <AddRemoteForm onSubmit={handleAddRemote} />
-        </>
-      )} */}
-
       {socket !== null && (
         <>
           <Typography variant="h6">Endereços</Typography>
