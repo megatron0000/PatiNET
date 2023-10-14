@@ -150,7 +150,7 @@ export function TCPClient() {
             key={remote.localPort + "=>" + remote.ip + ":" + remote.port}
             localAddress={`127.0.0.1:${remote.localPort || "?"}`}
             remoteAddress={`${remote.ip}:${remote.port} ${
-              remote.hostname ? ` (${remote.hostname})` : null
+              remote.hostname ? ` (${remote.hostname})` : ""
             }`}
             status={remote.status}
             inboundData={remote.inboundData}

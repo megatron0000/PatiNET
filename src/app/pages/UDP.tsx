@@ -142,7 +142,7 @@ export function UDP() {
                 key={remote.ip + remote.port}
                 localAddress={`127.0.0.1:${socket?.address().port}`}
                 remoteAddress={`${remote.ip}:${remote.port} ${
-                  remote.hostname ? ` (${remote.hostname})` : null
+                  remote.hostname ? ` (${remote.hostname})` : ""
                 }`}
                 status={null}
                 inboundData={remote.inboundData}
