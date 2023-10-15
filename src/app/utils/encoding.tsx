@@ -36,3 +36,22 @@ export const binaryToBuffer = (binary: string, base: number | string) =>
 
 export const binaryToPlain = (binary: string, base: number | string) =>
   bufferToPlain(binaryToBuffer(binary, base));
+
+export const isValidBinary = (binary: string, base: number | string) => {
+  if (base === "16") {
+    const hasForbiddenChars = binary.match(/[^0-9 a-fA-F]/);
+    const hasMoreThanTwoCharsInAByte = binary.match(/[^ ]{3,}/);
+    return !hasForbiddenChars && !hasMoreThanTwoCharsInAByte;
+  }
+  //
+  else if (base === "10") {
+    const hasForbiddenChars = binary.match(/[^0-9 ]/);
+    const hasByteGreaterThan255 = binary
+      .match(/[^ ]{3,}/g)
+      ?.map(Number)
+      .some((n) => n > 255);
+    return !hasForbiddenChars && !hasByteGreaterThan255;
+  }
+
+  throw new Error("Invalid base");
+};
