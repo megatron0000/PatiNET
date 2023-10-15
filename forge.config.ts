@@ -12,6 +12,9 @@ import { rendererConfig } from "./webpack.renderer.config";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // fix to "could not find the Electron app binary at ..."
+    // thanks to https://it-jm.tistory.com/187
+    executableName: "patinet",
   },
   rebuildConfig: {},
   makers: [
