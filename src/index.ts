@@ -10,6 +10,8 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+const isProduction = () => app.isPackaged;
+
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -25,8 +27,9 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (!isProduction()) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished
@@ -34,7 +37,11 @@ const createWindow = (): void => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   createWindow();
-  createWindow();
+
+  // create a second window in development mode
+  if (!isProduction()) {
+    createWindow();
+  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
