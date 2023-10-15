@@ -39,6 +39,18 @@ const config: ForgeConfig = {
       },
     }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "me",
+          name: "PatiNET",
+        },
+        prerelease: true,
+      },
+    },
+  ],
 };
 
 export default config;
