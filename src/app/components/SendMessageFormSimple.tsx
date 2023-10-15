@@ -1,7 +1,8 @@
 import EmailIcon from "@mui/icons-material/Email";
-import { Button, TextField, useTheme } from "@mui/material";
+import { Button, useTheme } from "@mui/material";
 import { ComponentProps, useState } from "react";
 import { validateMessage } from "../utils/validate-message";
+import { BinaryTextField } from "./BinaryTextField";
 
 type Props = {
   onSubmit: (message: string) => void;
@@ -37,11 +38,11 @@ export function SendMessageFormSimple({
         ...style,
       }}
     >
-      <TextField
+      <BinaryTextField
         label="Mensagem"
         multiline
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={(newValue) => setMessage(newValue)}
         error={messageError !== null}
         helperText={messageError}
         margin="none"
