@@ -86,7 +86,8 @@ export function PortBindForm<T extends SocketType>({
       newSocket.removeListener("listening", onListening);
       newSocket.removeListener("error", onError);
       setSocket(newSocket);
-      // @ts-expect-error
+      // @ts-expect-error because the typing for the return of address()
+      // is string | AddressInfo | null, but we assume it is AddressInfo
       setPort(newSocket.address().port.toString());
       onBound(newSocket);
     };
