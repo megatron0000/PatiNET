@@ -13,15 +13,19 @@ import {
   useTheme,
 } from "@mui/material";
 import { ComponentProps } from "react";
+import { DataBox } from "./DataBox";
 import { SendMessageFormSimple } from "./SendMessageFormSimple";
+
+/**
+ * null means there is no status (UDP)
+ */
+type Status = null | "connected" | "disconnected";
 
 type Props = {
   localAddress: string;
   remoteAddress: string;
-  /**
-   * null means there is no status (UDP)
-   */
-  status: null | "connected" | "disconnected";
+
+  status: Status;
   inboundData: string;
   outboundData: string;
 
@@ -124,52 +128,16 @@ export function HostCard({
             <Typography variant="body2" color="text.secondary">
               Dados enviados
             </Typography>
-            <BoxedText
-              style={{
-                background:
-                  status === "disconnected" ? theme.palette.grey[200] : "",
-              }}
-            >
-              {outboundData}
-            </BoxedText>
+            <DataBox status={status} data={outboundData} />
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body2" color="text.secondary">
               Dados recebidos
             </Typography>
-            <BoxedText
-              style={{
-                background:
-                  status === "disconnected" ? theme.palette.grey[200] : "",
-              }}
-            >
-              {inboundData}
-            </BoxedText>
+            <DataBox status={status} data={inboundData} />
           </Grid>
         </Grid>
       </CardContent>
     </Card>
   );
 }
-
-const BoxedText = ({
-  children,
-  style = {},
-}: { children: string } & ComponentProps<"div">) => {
-  const theme = useTheme();
-
-  return (
-    <Box
-      sx={{
-        border: `1px solid ${theme.palette.grey[300]}`,
-        borderRadius: "5px",
-        padding: theme.spacing(1),
-        whiteSpace: "pre",
-        overflowX: "auto",
-      }}
-      style={style}
-    >
-      {children + "\n"}
-    </Box>
-  );
-};
