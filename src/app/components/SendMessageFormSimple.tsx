@@ -12,8 +12,6 @@ export function SendMessageFormSimple({
   onSubmit,
   style = {},
 }: Props & Omit<ComponentProps<"form">, "onSubmit">) {
-  const theme = useTheme();
-
   const [messageError, setMessageError] = useState<null | string>(null);
   const [message, setMessage] = useState("");
 

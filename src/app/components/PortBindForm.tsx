@@ -2,7 +2,7 @@ import PowerIcon from "@mui/icons-material/Power";
 import PowerOffIcon from "@mui/icons-material/PowerOff";
 import { Button, TextField, Typography } from "@mui/material";
 import { Socket as UDPSocket, createSocket } from "dgram";
-import { Socket as TCPClient, Server as TCPServer, createServer } from "net";
+import { Server as TCPServer, createServer } from "net";
 import { ComponentProps, useState } from "react";
 import { validatePort } from "../utils/validate-port";
 
