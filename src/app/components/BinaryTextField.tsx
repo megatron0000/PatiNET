@@ -87,13 +87,16 @@ export function BinaryTextField<Variant extends TextFieldVariants>(
             onChange={onChange}
             spellCheck={false}
             InputProps={{
-              style: { paddingRight: "45px", ...(props.style || {}) },
+              style: {
+                paddingRight: mode === "plain" ? "" : "35px",
+                ...(props.style || {}),
+              },
             }}
           />
           <HoverButtons
             labels={["10", "16"]}
             onClick={toggleMode}
-            sx={{ right: "28px", top: "4px" }}
+            sx={{ right: "25px", top: "4px" }}
           />
         </Box>
       )}
