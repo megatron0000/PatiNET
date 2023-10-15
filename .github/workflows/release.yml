@@ -1,3 +1,5 @@
+# Credit: https://sevic.dev/notes/electron-forge-publish-github/
+
 name: Release app
 on:
   workflow_dispatch:
