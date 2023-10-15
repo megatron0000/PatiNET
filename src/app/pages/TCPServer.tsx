@@ -4,6 +4,7 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useRef, useState } from "react";
 import { HostCard } from "../components/HostCard";
 import { PortBindForm } from "../components/PortBindForm";
+import { bufferToPlain } from "../utils/encoding";
 
 interface Remote {
   ip: string;
@@ -40,7 +41,7 @@ export function TCPServer() {
       socket.on("data", (message) => {
         setRemotes((prev) => {
           const newRemotes = [...prev];
-          remote.inboundData += message.toString();
+          remote.inboundData += bufferToPlain(message);
           return newRemotes;
         });
       });

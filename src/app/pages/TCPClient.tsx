@@ -4,6 +4,7 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { AddRemoteFormCard } from "../components/AddRemoteFormCard";
 import { HostCard } from "../components/HostCard";
+import { bufferToPlain } from "../utils/encoding";
 
 interface Remote {
   ip: string;
@@ -102,7 +103,7 @@ export function TCPClient() {
       setRemotes((prev) => {
         const newRemotes = [...prev];
         newRemotes.find((remote) => remote.socket === socket)!.inboundData +=
-          message.toString();
+          bufferToPlain(message);
         return newRemotes;
       });
     });

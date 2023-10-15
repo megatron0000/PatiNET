@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { AddRemoteFormCard } from "../components/AddRemoteFormCard";
 import { HostCard } from "../components/HostCard";
 import { PortBindForm } from "../components/PortBindForm";
+import { bufferToPlain } from "../utils/encoding";
 
 interface Remote {
   ip: string;
@@ -37,11 +38,11 @@ export function UDP() {
           newRemotes.unshift({
             ip: address,
             port: port.toString(),
-            inboundData: message.toString(),
+            inboundData: bufferToPlain(message),
             outboundData: "",
           });
         } else {
-          newRemotes[remoteIndex].inboundData += message.toString();
+          newRemotes[remoteIndex].inboundData += bufferToPlain(message);
         }
         return newRemotes;
       });
