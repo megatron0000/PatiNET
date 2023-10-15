@@ -10,6 +10,8 @@ export const hoverSx = {
 
   "&:hover > .buttonBox": {
     backgroundColor: "white",
+    opacity: 0.9,
+    borderRadius: "20px",
   },
 
   ".iconButtonSelected": {
