@@ -1,6 +1,6 @@
 # PatiNET - Aplicação Cliente/Servidor UDP e TCP
 
-> English version: [README.en.md](README.en.md)
+> English version [here](https://github.com/megatron0000/PatiNET/blob/main/README.en.md)
 
 PatiNET é uma aplicação Electron fácil de usar para lidar com comunicação cliente/servidor tanto em UDP quanto em TCP. Este README irá guiá-lo sobre como usar o PatiNET como usuário final ou desenvolvedor.
 
@@ -127,4 +127,4 @@ Aceitamos contribuições para melhorar o PatiNET. Sinta-se à vontade para abri
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT - consulte o arquivo [LICENSE.md](LICENSE.md) para obter mais informações.
+Este projeto está licenciado sob a Licença MIT - consulte o arquivo [LICENSE](LICENSE) para obter mais informações.
