@@ -22,10 +22,6 @@ export function UDP() {
   const [isAddingRemote, setIsAddingRemote] = useState(false);
 
   useEffect(() => {
-    handleAddRemote("localhost", "127.0.0.1", "80");
-  }, []);
-
-  useEffect(() => {
     if (!socket) return;
 
     socket.on("message", (message, { address, port }) => {
@@ -113,7 +109,7 @@ export function UDP() {
         style={{ marginBottom: theme.spacing(5) }}
       />
 
-      {(socket !== null || true) && (
+      {socket !== null && (
         <>
           <Typography variant="h6">Endereços</Typography>
 
