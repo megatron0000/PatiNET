@@ -1,8 +1,8 @@
 {
   "name": "my-new-app",
-  "productName": "my-new-app",
+  "productName": "PatiNET",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Ferramentas para UDP/TCP",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
