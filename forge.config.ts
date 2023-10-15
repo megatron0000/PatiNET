@@ -16,7 +16,7 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({}),
-    new MakerZIP({}, ["darwin"]),
+    new MakerZIP({}),
     new MakerRpm({}),
     new MakerDeb({}),
   ],
@@ -44,7 +44,7 @@ const config: ForgeConfig = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "me",
+          owner: "megatron0000",
           name: "PatiNET",
         },
         prerelease: true,
